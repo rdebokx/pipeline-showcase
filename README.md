@@ -1,5 +1,18 @@
 # pipeline-showcase
 
+##Goal
+The goal of this project is to showcase the use of the following systems / framework in Kotlin. Therefore, 
+this particular combination of frameworks might not make sense, though this is simply because this is aimed at 
+demonstrating the use of these frameworks.
+
+- Docker
+- Kafka (TODO)
+- Akka
+- Gradle
+- inFluxDB (TODO)
+- Grafana (TODO)
+- Spring
+
 ##Dependencies
 - Gradle 4.0 or higher (`brew install gradle` on OSX)
 

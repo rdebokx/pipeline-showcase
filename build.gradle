@@ -54,5 +54,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Required for Kotlin integration
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'com.typesafe.akka:akka-actor_2.12:2.5.3'
+    testCompile 'com.typesafe.akka:akka-testkit_2.12:2.5.3'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
