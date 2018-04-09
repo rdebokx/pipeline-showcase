@@ -18,6 +18,15 @@ demonstrating the use of these frameworks.
 
 ##Running the application
 
+### Step 1: Starting Kafka Zookeeper
+`./bin/zookeeper-server-start.sh ../pipeline-showcase/config/zookeeper.properties`
+
+TODO: start kafka servers
+
+TODO: automate this in one central script
+
+### Step 2: starting the application
+
 ####Docker
 The preferred way to run the application is by using Docker. This can be done by following these two steps
 1. Building the application: `./gradlew docker build`

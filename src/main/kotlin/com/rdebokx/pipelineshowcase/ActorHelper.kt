@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import com.rdebokx.pipelineshowcase.actors.GreeterActor
 import com.rdebokx.pipelineshowcase.actors.LogActor
+import com.rdebokx.pipelineshowcase.actors.WordActor
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
@@ -20,15 +21,16 @@ open class ActorHelper {
     companion object {
         const val ACTOR_SYSTEM = "PipelineActorSystem"
         const val GREETER_ACTOR = "greeterActor"
+        const val WORD_ACTOR = "wordActor"
 
         fun getActorPath(actorName: String) = "akka://$ACTOR_SYSTEM/user/$actorName"
     }
 
-    //This value is pulled from applicaiton.conf using autowiring
+    //This value is pulled from application.properties using autowiring
     @Value("\${akka.remote.netty.tcp.port}")
     var akkaPort: Int = 0
 
-    //This value is pulled from applicaiton.conf using autowiring
+    //This value is pulled from applicaiton.properties using autowiring
     @Value("\${akka.remote.netty.tcp.hostname}")
     var akkaHostName: String = ""
 
@@ -41,7 +43,6 @@ open class ActorHelper {
         val system = ActorSystem.create(ACTOR_SYSTEM, defaultApplication)
 
         val logActor = system.actorOf(Props.create(LogActor::class.java))
-        logger.info("logActorPath: " + logActor.path())
         system.actorOf(Props.create(GreeterActor::class.java, "GreeterLogger1 logs: ", logActor), GREETER_ACTOR)
         return system
     }
