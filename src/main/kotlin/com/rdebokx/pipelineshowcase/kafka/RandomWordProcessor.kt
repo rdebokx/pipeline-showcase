@@ -19,7 +19,7 @@ class RandomWordProcessor {
     fun receive(consumerRecord: ConsumerRecord<String?, String?>) {
         val key = consumerRecord.key() ?: "[noKey]"
         val value = consumerRecord.value() ?: "[noValue]"
-        logger.info("Received message in ${KafkaHelper.INPUT_WORDS_TOPIC}: $key->$value")
+        logger.info("Kafka Processor Received message in ${KafkaHelper.INPUT_WORDS_TOPIC}: $key->$value")
         //Put both the original and the reversed word in the logging queue
         kafka.send(KafkaHelper.WORDS_LOGGING_TOPIC, value)
         kafka.send(KafkaHelper.WORDS_LOGGING_TOPIC, value.reversed())

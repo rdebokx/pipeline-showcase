@@ -9,10 +9,12 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.core.KafkaTemplate
 
 @Configuration
 @ComponentScan("com.rdebokx.pipelineshowcase")
@@ -34,6 +36,9 @@ open class ActorHelper {
     @Value("\${akka.remote.netty.tcp.hostname}")
     var akkaHostName: String = ""
 
+    @Autowired
+    lateinit var kafka: KafkaTemplate<String, String>
+
     @Bean
     open fun actorSystem(): ActorSystem {
         logger.info("Starting Actor System at $akkaHostName:$akkaPort")
@@ -43,7 +48,7 @@ open class ActorHelper {
         val system = ActorSystem.create(ACTOR_SYSTEM, defaultApplication)
 
         val logActor = system.actorOf(Props.create(LogActor::class.java))
-        system.actorOf(Props.create(GreeterActor::class.java, "GreeterLogger1 logs: ", logActor), GREETER_ACTOR)
+        system.actorOf(Props.create(GreeterActor::class.java, "GreeterLogger1 logs: ", logActor, kafka), GREETER_ACTOR)
         return system
     }
 

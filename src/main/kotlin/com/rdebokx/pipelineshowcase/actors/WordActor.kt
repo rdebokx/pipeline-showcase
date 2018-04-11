@@ -3,30 +3,30 @@ package com.rdebokx.pipelineshowcase.actors
 import akka.actor.AbstractActor
 import akka.event.Logging
 import akka.event.LoggingAdapter
+import com.rdebokx.pipelineshowcase.Greeting
 import com.rdebokx.pipelineshowcase.KafkaHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.stereotype.Component
 import java.util.*
 
-class WordActor: AbstractActor() {
+class WordActor(private val kafka: KafkaTemplate<String, String>): AbstractActor() {
 
     private val log: LoggingAdapter = Logging.getLogger(context.system, this)
 
     private val randomizer = Random()
 
-    private var processedMessage: String? = null
-
-    @Autowired
-    lateinit var kafka: KafkaTemplate<String, String>
+    private var processedMessage: Greeting? = null
 
     override fun createReceive(): Receive {
-        return receiveBuilder().match(String::class.java, {m ->
-            log.debug("Akka Received message $m, dispatching 10 random permutations to Kafka")
-            randomizer.ints(10, m.length)
-                .forEach { splitIndex ->
+        return receiveBuilder().match(Greeting::class.java, { m ->
+            log.debug("Akka Received message $m, dispatching 10 random permutations to Kafka for message ${m.id}")
+            processedMessage = m
+            randomizer.ints(10, 0, m.content.length).toArray()
+                .forEachIndexed { i: Int, splitIndex: Int ->
                     kafka.send(
                         KafkaHelper.INPUT_WORDS_TOPIC,
-                        m.substring(0, splitIndex) + "|", m.substring(splitIndex)
+                        m.id.toString() + "-" + i, m.content.substring(0, splitIndex) + "|" + m.content.substring(splitIndex)
                     )
                 }
             //Terminate this actor

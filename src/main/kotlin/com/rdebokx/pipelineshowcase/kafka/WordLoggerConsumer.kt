@@ -12,7 +12,7 @@ class WordLoggerConsumer {
     @KafkaListener(topics = arrayOf(KafkaHelper.WORDS_LOGGING_TOPIC))
     fun receive(consumerRecord: ConsumerRecord<String?, String?>) {
         val value = consumerRecord.value() ?: "[noValue]"
-        logger.info("Logging Word ===> $value")
+        logger.info("Kafka Logging Word ===> $value")
     }
 
     companion object {
