@@ -19,9 +19,11 @@ demonstrating the use of these frameworks.
 ##Running the application
 
 ### Step 1: Starting Kafka Zookeeper
-`./bin/zookeeper-server-start.sh ../pipeline-showcase/config/zookeeper.properties`
+In a new console window: `./bin/kafka/bin/zookeeper-server-start.sh ./bin/kafka/config/zookeeper.properties`
 
 TODO: start kafka servers
+`./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server0.properties`
+`./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server1.properties`
 
 TODO: automate this in one central script
 
