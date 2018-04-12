@@ -16,5 +16,6 @@ class KafkaHelper {
         const val WORDS_LOGGING_TOPIC = "words-logging"
 
         val logger = LoggerFactory.getLogger(KafkaHelper::class.java)
+
     }
 }
