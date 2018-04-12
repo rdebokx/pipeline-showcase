@@ -6,7 +6,7 @@ this particular combination of frameworks might not make sense, though this is s
 demonstrating the use of these frameworks.
 
 - Docker
-- Kafka (TODO)
+- Kafka
 - Akka
 - Gradle
 - inFluxDB (TODO)
@@ -18,20 +18,29 @@ demonstrating the use of these frameworks.
 
 ##Running the application
 
-### Step 1: Starting Kafka Zookeeper
-In a new console window: `./bin/kafka/bin/zookeeper-server-start.sh ./bin/kafka/config/zookeeper.properties`
+### Step 1:
+The application is built to simulate a network of Kafka nodes that run on different instances. As a result, we're using IP addresses
+that first need to be configured in the properties files.
+- Determine your IP addres, eg with `ifconfig | grep inet`
+- Update the server host names with this IP address in `bin/kafka/config/server*.properties` and `src/main/resources/application.properties`
 
-TODO: start kafka servers
-`./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server0.properties`
-`./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server1.properties`
+### Step 2: Starting Kafka Zookeeper and Servers
+Run the following 3 commands in separate terminals (or alternatively run them in the background and redirect the output to a log file):
+```
+./bin/kafka/bin/zookeeper-server-start.sh ./bin/kafka/config/zookeeper.properties
+```
+```
+./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server0.properties
+```
+```
+./bin/kafka/bin/kafka-server-start.sh ./bin/kafka/config/server1.properties
+```
 
-TODO: automate this in one central script
-
-### Step 2: starting the application
+### Step 3: starting the application
 
 ####Docker
 The preferred way to run the application is by using Docker. This can be done by following these two steps
-1. Building the application: `./gradlew docker build`
+1. Building the application: `./gradlew build && ./gradlew docker build`
 2. Running the application: `docker run -p 8080:8080 -t com.rdebokx/pipeline-showcase` 
 
 The application will then be available on `localhost:8080`
