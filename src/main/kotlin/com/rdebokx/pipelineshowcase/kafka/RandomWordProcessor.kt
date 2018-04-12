@@ -11,10 +11,16 @@ import org.springframework.stereotype.Component
 @Component
 class RandomWordProcessor {
 
-
+    /**
+     * The KafkaTemplate initiated by Spring, to be used to send messages to the Kafka topics.
+     */
     @Autowired
     lateinit var kafka: KafkaTemplate<String, String>
 
+    /**
+     * Consumer function for the input-words topic. For each received record, this Processor will submit the
+     * received message and its inverse to the words-logging topic.
+     */
     @KafkaListener(topics = arrayOf(KafkaHelper.INPUT_WORDS_TOPIC))
     fun receive(consumerRecord: ConsumerRecord<String?, String?>) {
         val key = consumerRecord.key() ?: "[noKey]"
@@ -26,6 +32,9 @@ class RandomWordProcessor {
     }
 
     companion object {
+        /**
+         * Logger used by this Processor for monitoring purposes.
+         */
         val logger = LoggerFactory.getLogger(RandomWordProcessor::class.java)
     }
 

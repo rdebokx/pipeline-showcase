@@ -4,7 +4,6 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import com.rdebokx.pipelineshowcase.actors.GreeterActor
 import com.rdebokx.pipelineshowcase.actors.LogActor
-import com.rdebokx.pipelineshowcase.actors.WordActor
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
@@ -18,29 +17,56 @@ import org.springframework.kafka.core.KafkaTemplate
 
 @Configuration
 @ComponentScan("com.rdebokx.pipelineshowcase")
-open class ActorHelper {
+class ActorHelper {
 
     companion object {
-        const val ACTOR_SYSTEM = "PipelineActorSystem"
-        const val GREETER_ACTOR = "greeterActor"
-        const val WORD_ACTOR = "wordActor"
 
+        /**
+         * Name of the ActorSystem that will be initialized.
+         */
+        const val ACTOR_SYSTEM = "PipelineActorSystem"
+
+        /**
+         * Name of the GreetingActor that will be initialized.
+         */
+        const val GREETER_ACTOR = "greeterActor"
+
+        /**
+         * Helper function for constructing the absolute akka path to an actor of the given name in the Actor System that was set up by this helper.
+         * @param actorName The name of the actor for which the akka path is requested.
+         */
         fun getActorPath(actorName: String) = "akka://$ACTOR_SYSTEM/user/$actorName"
+
+        /**
+         * Logger used by this helper.
+         */
+        private val logger = LoggerFactory.getLogger(ActorHelper::class.java)
     }
 
-    //This value is pulled from application.properties using autowiring
+    /**
+     * The port on which akka will be running. Pulled from application.properties.
+     */
     @Value("\${akka.remote.netty.tcp.port}")
     var akkaPort: Int = 0
 
-    //This value is pulled from applicaiton.properties using autowiring
+    /**
+     * The hostname on which akka will be running. Pulled from application.properties.
+     */
     @Value("\${akka.remote.netty.tcp.hostname}")
     var akkaHostName: String = ""
 
+    /**
+     * The KafkaTemplate instantiated by Spring that the actors will be created in.
+     */
     @Autowired
     lateinit var kafka: KafkaTemplate<String, String>
 
+    /**
+     * Bean function for creating an Actor System for the application, including a GreetingActor and a LogActor.
+     * Actor system will be running on the hostname and port configured in application.properties.
+     */
     @Bean
-    open fun actorSystem(): ActorSystem {
+    fun actorSystem(): ActorSystem {
         logger.info("Starting Actor System at $akkaHostName:$akkaPort")
         val defaultApplication: Config = ConfigFactory.defaultApplication()
                 .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(akkaHostName))
@@ -53,5 +79,3 @@ open class ActorHelper {
     }
 
 }
-
-private val logger = LoggerFactory.getLogger(ActorHelper::class.java)

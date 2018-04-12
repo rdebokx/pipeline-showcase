@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component
 @Component
 class WordLoggerConsumer {
 
+    /**
+     * Consumer function for the words-logging topic. Upon receiving a record, this consumer will log the message
+     * in this record.
+     */
     @KafkaListener(topics = arrayOf(KafkaHelper.WORDS_LOGGING_TOPIC))
     fun receive(consumerRecord: ConsumerRecord<String?, String?>) {
         val value = consumerRecord.value() ?: "[noValue]"
@@ -16,6 +20,9 @@ class WordLoggerConsumer {
     }
 
     companion object {
+        /**
+         * Logger used by this Consumer for logging received records.
+         */
         val logger = LoggerFactory.getLogger(WordLoggerConsumer::class.java)
     }
 
