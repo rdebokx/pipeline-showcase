@@ -2,8 +2,10 @@ package com.rdebokx.pipelineshowcase
 
 import akka.actor.ActorSystem
 import akka.actor.Props
+import akka.actor.TypedActor
 import com.rdebokx.pipelineshowcase.actors.GreeterActor
 import com.rdebokx.pipelineshowcase.actors.LogActor
+import com.rdebokx.pipelineshowcase.actors.WordActor
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
@@ -32,10 +34,22 @@ class ActorHelper {
         const val GREETER_ACTOR = "greeterActor"
 
         /**
+         * The prefix of the WordActors that will be initiated.
+         */
+        const val WORD_ACTOR_PREFIX = "wordActor-"
+
+        /**
          * Helper function for constructing the absolute akka path to an actor of the given name in the Actor System that was set up by this helper.
          * @param actorName The name of the actor for which the akka path is requested.
          */
-        fun getActorPath(actorName: String) = "akka://$ACTOR_SYSTEM/user/$actorName"
+        fun getActorPath(actorName: String) = getActorPath(ACTOR_SYSTEM, actorName)
+
+        /**
+         * Helper function for constructing the absolute akka path to an actor of the given name in the given actor system.
+         * @param actorSystem The name of the actor system in which an actor is requested.
+         * @param actorName The name of the actor for which the akk path is requested. May contain wildcards.
+         */
+        fun getActorPath(actorSystem: String, actorName: String) = "akka://$actorSystem/user/$actorName"
 
         /**
          * Logger used by this helper.
@@ -75,6 +89,9 @@ class ActorHelper {
 
         val logActor = system.actorOf(Props.create(LogActor::class.java))
         system.actorOf(Props.create(GreeterActor::class.java, "GreeterLogger1 logs: ", logActor, kafka), GREETER_ACTOR)
+        for(i in 0 .. 5){
+            system.actorOf(Props.create(WordActor::class.java, kafka), WORD_ACTOR_PREFIX + i)
+        }
         return system
     }
 
