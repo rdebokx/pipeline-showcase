@@ -50,6 +50,12 @@ repositories {
     jcenter()
 }
 
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 dependencies {
     compile 'org.springframework.kafka:spring-kafka'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Required for Kotlin integration

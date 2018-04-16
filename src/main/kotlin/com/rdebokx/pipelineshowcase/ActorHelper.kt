@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.KafkaTemplate
+import java.util.*
 
 @Configuration
 @ComponentScan("com.rdebokx.pipelineshowcase")
@@ -90,7 +91,7 @@ class ActorHelper {
         val logActor = system.actorOf(Props.create(LogActor::class.java))
         system.actorOf(Props.create(GreeterActor::class.java, "GreeterLogger1 logs: ", logActor, kafka), GREETER_ACTOR)
         for(i in 0 .. 5){
-            system.actorOf(Props.create(WordActor::class.java, kafka), WORD_ACTOR_PREFIX + i)
+            system.actorOf(Props.create(WordActor::class.java, kafka, Random()), WORD_ACTOR_PREFIX + i)
         }
         return system
     }
